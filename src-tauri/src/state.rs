@@ -1,6 +1,7 @@
 //! Managed application state: the optional (locked-out) store handle, the
 //! database path, and the idle clock used by the auto-lock timer (S7).
 
+use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Mutex;
 use std::time::Instant;
@@ -8,6 +9,9 @@ use std::time::Instant;
 use pfcore::Store;
 
 pub struct AppState {
+    /// In-memory Google access tokens per mail account: (token, valid until).
+    /// Never persisted — a restart simply refreshes.
+    pub google_tokens: Mutex<HashMap<i64, (String, Instant)>>,
     /// `None` while locked or before first unlock. Dropping the `Store`
     /// closes the SQLCipher connection — lock is genuine, not cosmetic.
     /// `Arc` so the Wi-Fi sync server threads can hold it.
@@ -22,6 +26,7 @@ impl AppState {
     pub fn new(db_path: PathBuf) -> Self {
         Self {
             store: std::sync::Arc::new(Mutex::new(None)),
+            google_tokens: Mutex::new(HashMap::new()),
             db_path: Mutex::new(db_path),
             last_activity: Mutex::new(Instant::now()),
             ai_cancel: crate::aiworker::Cancel::default(),

@@ -7,6 +7,7 @@ use std::time::Duration;
 
 use tauri::Manager;
 
+use crate::googlecmd;
 use crate::mailsync;
 use crate::state::AppState;
 
@@ -49,7 +50,7 @@ fn sync_all(state: &AppState) -> usize {
             .unwrap_or_default()
     };
     let mut failures = 0usize;
-    for (account, kind) in accounts {
+    for &(account, ref kind) in &accounts {
         let result = if kind == "pop3" {
             // POP3 maildrops are small; lock-held sync is acceptable.
             let Ok(mut guard) = state.store.lock() else {
@@ -63,6 +64,13 @@ fn sync_all(state: &AppState) -> usize {
             mailsync::sync_imap_account(state, account).map(|r| r.len())
         };
         if result.is_err() {
+            failures += 1;
+        }
+    }
+    // Linked Google identities ride the same cadence: Calendar + Tasks
+    // two-way sync (run_sync holds the store lock only around DB work).
+    for &(account, _) in &accounts {
+        if googlecmd::has_link(state, account) && googlecmd::run_sync(state, account).is_err() {
             failures += 1;
         }
     }

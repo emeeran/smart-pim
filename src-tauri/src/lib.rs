@@ -6,6 +6,8 @@ mod aiworker;
 mod autolock;
 mod commands;
 mod dav;
+mod google;
+mod googlecmd;
 mod import_csv;
 pub mod mailsync;
 mod mailworker;
@@ -17,6 +19,7 @@ use std::time::Instant;
 
 use tauri::{AppHandle, Emitter, Manager, State};
 
+use crate::googlecmd::{google_connect, google_disconnect, google_status, google_sync};
 use crate::state::AppState;
 
 /// Sentinel event names emitted to the UI.
@@ -318,6 +321,15 @@ fn mail_sync(app: tauri::AppHandle, state: State<AppState>, account_id: i64) -> 
             "mail://synced",
             serde_json::json!({ "account_id": account_id, "error": error }),
         );
+        // A linked Google identity rides along: Calendar + Tasks two-way.
+        if let Some(state) = app.try_state::<AppState>() {
+            if let Err(gerr) = googlecmd::run_sync(&state, account_id) {
+                let _ = app.emit(
+                    "google://synced",
+                    serde_json::json!({ "account_id": account_id, "error": gerr }),
+                );
+            }
+        }
     });
     Ok(())
 }
@@ -1106,6 +1118,10 @@ pub fn run() {
             settings_set,
             backup_now,
             mail_sync,
+            google_connect,
+            google_sync,
+            google_status,
+            google_disconnect,
             outbox_process,
             mail_accounts,
             mail_account_create,
