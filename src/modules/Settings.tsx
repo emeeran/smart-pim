@@ -14,6 +14,7 @@ import {
   type BackupInfo,
   type DeviceInfo,
   type DavProfile,
+  type GoogleStatus,
   type SyncReport,
   type DavReport,
 } from "../api";
@@ -480,6 +481,120 @@ function CloudSection() {
   );
 }
 
+function GoogleSection() {
+  const accounts = useAsync(() => api.mailAccounts(), []);
+  const [clientId, setClientId] = useState("");
+  const [clientSecret, setClientSecret] = useState("");
+  const [loaded, setLoaded] = useState(false);
+  const [links, setLinks] = useState<Record<number, GoogleStatus>>({});
+  const [note, setNote] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    void api.settingsGet("google.client_id").then((v) => setClientId(v ?? "")).catch(() => undefined);
+    void api.settingsGet("google.client_secret").then((v) => setClientSecret(v ?? "")).catch(() => undefined);
+    setLoaded(true);
+  }, []);
+
+  const reloadLinks = () => {
+    for (const a of accounts.data ?? []) {
+      void api
+        .googleStatus(a.id)
+        .then((s) => setLinks((m) => ({ ...m, [a.id]: s })))
+        .catch(() => undefined);
+    }
+  };
+  useEffect(reloadLinks, [accounts.data]);
+
+  const saveCreds = async () => {
+    try {
+      await api.settingsSet("google.client_id", clientId.trim());
+      await api.settingsSet("google.client_secret", clientSecret.trim());
+      setNote("Google OAuth client saved. Now connect an account in the Mail module.");
+      setError(null);
+    } catch (e) {
+      setError(String(e));
+      setNote(null);
+    }
+  };
+
+  // Create a Google Cloud "Desktop app" OAuth client, then paste both values
+  // here; the connect button lives on the mail account (Mail module).
+  return (
+    <div class="settings-grid">
+      <h4>Google (Calendar &amp; Tasks)</h4>
+      <div class="settings-actions">
+        <input
+          placeholder="OAuth client ID"
+          style={{ width: 280 }}
+          value={clientId}
+          onInput={(e) => setClientId((e.target as HTMLInputElement).value)}
+        />
+        <input
+          type="password"
+          placeholder="OAuth client secret"
+          style={{ width: 180 }}
+          value={clientSecret}
+          onInput={(e) => setClientSecret((e.target as HTMLInputElement).value)}
+        />
+        <button onClick={() => void saveCreds()}>Save</button>
+      </div>
+      <div class="settings-note">
+        Create an OAuth client of type “Desktop app” at console.cloud.google.com
+        (APIs: Google Calendar API, Tasks API) and paste its ID and secret here.
+        They are stored in the encrypted database, next to your mail passwords.
+      </div>
+      <table class="settings-table">
+        <thead>
+          <tr>
+            <th>Mail account</th>
+            <th>Google account</th>
+            <th>Status</th>
+            <th>Last sync</th>
+            <th />
+          </tr>
+        </thead>
+        <tbody>
+          {(accounts.data ?? []).map((a) => {
+            const s = links[a.id];
+            return (
+              <tr key={a.id}>
+                <td>{a.name}</td>
+                <td class="settings-note">{s?.linked ? (s.google_email ?? "—") : "—"}</td>
+                <td>{s?.linked ? (s.status === "needs_reconnect" ? "needs reconnect" : "connected") : "not linked"}</td>
+                <td>{fmtWhen(s?.last_sync ?? null)}</td>
+                <td>
+                  {s?.linked && (
+                    <button
+                      class="danger-text"
+                      onClick={() => {
+                        if (confirm(`Disconnect Google from “${a.name}”?`)) {
+                          void api.googleDisconnect(a.id).then(reloadLinks).catch((e) => setError(String(e)));
+                        }
+                      }}
+                    >
+                      Remove
+                    </button>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+          {accounts.data && accounts.data.length === 0 && (
+            <tr>
+              <td colSpan={5} class="settings-note">
+                No mail accounts yet.
+              </td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+      {loaded && note && <div class="settings-ok">{note}</div>}
+      {error && <div class="settings-error">{error}</div>}
+    </div>
+  );
+}
+
 function AiSettingsSection() {
   const status = aiStatus.value;
   const [settings, setSettings] = useState<AiSettings | null>(null);
@@ -858,7 +973,12 @@ export function Settings() {
             {section === "security" && <SecuritySection />}
             {section === "backup" && <BackupSection />}
             {section === "devices" && <DevicesSection />}
-            {section === "cloud" && <CloudSection />}
+            {section === "cloud" && (
+              <>
+                <CloudSection />
+                <GoogleSection />
+              </>
+            )}
             {section === "ai" && <AiSettingsSection />}
           </div>
         </div>

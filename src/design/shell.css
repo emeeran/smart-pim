@@ -2145,6 +2145,16 @@ button.primary {
   font-size: 0.9em;
 }
 
+/* Google Calendar/Tasks link strip under the mail toolbar. */
+.google-link {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 4px 8px 8px;
+  font-size: 0.9em;
+}
+
 /* Readable placeholders in every theme (UA default is near-invisible). */
 input::placeholder,
 textarea::placeholder {

@@ -82,6 +82,16 @@ export interface Account {
   user: string | null;
 }
 
+/** Google Calendar/Tasks link state for a mail account (google_status). */
+export interface GoogleStatus {
+  linked: boolean;
+  google_email: string | null;
+  status: string | null;
+  last_sync: string | null;
+  last_error: string | null;
+  configured: boolean;
+}
+
 export interface FolderNode {
   id: number;
   account_id: number;
@@ -250,6 +260,16 @@ export const api = {
   /** Triggers a background sync; completion arrives via mail://synced. */
   mailSync: (accountId: number) =>
     t.invoke("mail_sync", { accountId }) as Promise<void>,
+  /** Starts the Google consent flow; result via google://connected or google://auth_error. */
+  googleConnect: (accountId: number) =>
+    t.invoke("google_connect", { accountId }) as Promise<void>,
+  /** Manual Google Calendar/Tasks sync; result via google://synced. */
+  googleSync: (accountId: number) =>
+    t.invoke("google_sync", { accountId }) as Promise<void>,
+  googleStatus: (accountId: number) =>
+    t.invoke("google_status", { accountId }) as Promise<GoogleStatus>,
+  googleDisconnect: (accountId: number) =>
+    t.invoke("google_disconnect", { accountId }) as Promise<void>,
   messageFull: (messageId: number) =>
     t.invoke("message_full", { messageId }) as Promise<MessageDetail>,
   messageMarkRead: (messageId: number, seen: boolean) =>

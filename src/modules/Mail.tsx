@@ -11,6 +11,7 @@ import {
   api,
   type Account,
   type FolderNode,
+  type GoogleStatus,
   type MessageDetail,
   type MessagePageRow,
 } from "../api";
@@ -722,6 +723,75 @@ function ReadingPane({
   );
 }
 
+// ------------------------------------------------------- google link card
+
+/** Connect / status / sync controls for the Google Calendar+Tasks link on
+ *  the selected mail account. Sync results arrive via google:// events and
+ *  surface in the shared sync note. */
+function GoogleLinkCard({ accountId, note }: { accountId: number | null; note: (m: string) => void }) {
+  const [status, setStatus] = useState<GoogleStatus | null>(null);
+
+  const reload = () => {
+    if (accountId === null) {
+      setStatus(null);
+      return;
+    }
+    void api.googleStatus(accountId).then(setStatus).catch(() => setStatus(null));
+  };
+  useEffect(reload, [accountId]);
+
+  if (accountId === null) return null;
+  const s = status;
+  return (
+    <div class="google-link">
+      {s === null ? null : !s.configured ? (
+        <span class="muted">
+          Google Calendar &amp; Tasks: set the OAuth client ID/secret in Settings first.
+        </span>
+      ) : s.linked && s.status === "needs_reconnect" ? (
+        <>
+          <span class="muted">
+            Google access was revoked for {s.google_email} — reconnect to resume syncing.
+          </span>
+          <button onClick={() => void api.googleConnect(accountId)}>Reconnect</button>
+        </>
+      ) : s.linked ? (
+        <>
+          <span class="muted">
+            Google: {s.google_email}
+            {s.last_sync ? ` · last sync ${new Date(s.last_sync).toLocaleTimeString()}` : ""}
+            {s.last_error ? ` · ${s.last_error}` : ""}
+          </span>
+          <button onClick={() => void api.googleSync(accountId)}>Sync Google</button>
+          <button
+            class="link-button"
+            title="Unlink Google Calendar & Tasks from this account"
+            onClick={() => {
+              if (confirm(`Disconnect Google (${s.google_email}) from this account?`)) {
+                void api.googleDisconnect(accountId).then(reload);
+              }
+            }}
+          >
+            Disconnect
+          </button>
+        </>
+      ) : (
+        <>
+          <span class="muted">Google Calendar &amp; Tasks: not linked.</span>
+          <button
+            onClick={() => {
+              note("Google sign-in opened in your browser — finish it there.");
+              void api.googleConnect(accountId);
+            }}
+          >
+            Connect Google Calendar &amp; Tasks
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ------------------------------------------------------------------ compose
 
 function ComposeDialog({
@@ -1231,6 +1301,28 @@ export function MailModule() {
   // folders, list and counts; surface failures without blocking anything.
   useEffect(() => {
     const un = api
+      .listen("google://connected", (ev) => {
+        const p = ev.payload as { email?: string; error?: string | null } | undefined;
+        if (p?.error) {
+          setSyncNote(`Connected as ${p.email ?? "Google"}, but the first sync failed: ${p.error}`);
+        } else {
+          setSyncNote(`Google Calendar & Tasks connected${p?.email ? ` as ${p.email}` : ""}.`);
+        }
+      })
+      .catch(() => undefined);
+    const unErr = api
+      .listen("google://auth_error", (ev) => {
+        const p = ev.payload as { error?: string } | undefined;
+        setSyncNote(`Google connect failed: ${p?.error ?? "unknown error"}`);
+      })
+      .catch(() => undefined);
+    const unSync = api
+      .listen("google://synced", (ev) => {
+        const p = ev.payload as { error?: string | null } | undefined;
+        if (p?.error) setSyncNote(`Google sync failed: ${p.error}`);
+      })
+      .catch(() => undefined);
+    const unMail = api
       .listen("mail://synced", (ev) => {
         const p = ev.payload as { account_id?: number; error?: string | null } | undefined;
         setFolderId(0);
@@ -1250,7 +1342,9 @@ export function MailModule() {
       })
       .catch(() => undefined);
     return () => {
-      void un.then((f) => f?.()).catch(() => undefined);
+      for (const u of [un, unErr, unSync, unMail]) {
+        void u.then((f) => f?.()).catch(() => undefined);
+      }
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -1397,6 +1491,7 @@ export function MailModule() {
 
   return (
     <div class="mail-module">
+      <GoogleLinkCard accountId={accountId} note={setSyncNote} />
       {syncNote && (
         <div class="sync-note">
           {syncNote}
