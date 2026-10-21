@@ -1,0 +1,311 @@
+/*
+ * Dialog scaffolding (FormDialog) and the EPIM-style editor fields used by
+ * EventDialog and Settings. Extends the shared .overlay/.dialog rules in
+ * shell.css — no token values redefined here.
+ */
+
+.form-dialog {
+  gap: 12px;
+  max-height: 82vh;
+  overflow: auto;
+}
+
+.form-dialog h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-dialog-error {
+  color: var(--danger);
+  font-size: 12px;
+}
+
+/* Footer: destructive action pinned left, the rest right. */
+.form-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-footer-spacer {
+  flex: 1;
+}
+
+.form-footer button {
+  padding: 6px 14px;
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  border: 1px solid var(--border-strong);
+}
+
+.form-footer button:hover {
+  background: var(--bg-hover);
+}
+
+.form-footer button.form-ok {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--fg-invert);
+  font-weight: 600;
+}
+
+.form-footer button.form-ok:hover {
+  filter: brightness(1.06);
+  background: var(--accent);
+}
+
+.form-footer button.danger-text {
+  border-color: transparent;
+  background: none;
+}
+
+.form-footer button.danger-text:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}
+
+/* --------------------------------------------------------------- fields */
+
+.form-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-row > label:first-child {
+  flex: none;
+  width: 96px;
+  color: var(--fg-muted);
+  text-align: right;
+}
+
+.form-row input[type="text"],
+.form-row input[type="date"],
+.form-row input[type="time"],
+.form-row input[type="number"],
+.form-row input:not([type]),
+.form-row select,
+.form-row textarea {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-panel);
+  color: inherit;
+  font: inherit;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+  outline: none;
+}
+
+.form-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.form-inline > * {
+  min-width: 0;
+}
+
+.form-check {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------- tab strip */
+
+.form-tabs {
+  display: flex;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+}
+
+.form-tabs button {
+  padding: 5px 12px;
+  border-radius: 6px 6px 0 0;
+  color: var(--fg-muted);
+  font-size: 12.5px;
+}
+
+.form-tabs button[aria-selected="true"] {
+  background: var(--bg-panel);
+  color: var(--fg-main);
+  border: 1px solid var(--border);
+  border-bottom-color: var(--bg-panel);
+}
+
+.form-tabpane {
+  padding-top: 8px;
+}
+
+/* ------------------------------------------------------- calendar picker */
+
+.cal-swatch-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.cal-swatch {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  padding: 0;
+}
+
+.cal-swatch[data-selected="true"] {
+  border-color: var(--fg-main);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+/* ------------------------------------------------------------- reminders */
+
+.reminder-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+}
+
+.reminder-row .form-remove {
+  color: var(--fg-muted);
+  padding: 0 6px;
+}
+
+.reminder-row .form-remove:hover {
+  color: var(--danger);
+}
+
+.form-subtle {
+  color: var(--fg-muted);
+  font-size: 11.5px;
+}
+
+/* ------------------------------------------------------- participant chips */
+
+.chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+/* ------------------------------------------------------- settings layout */
+
+.settings-dialog {
+  width: 620px;
+}
+
+.settings-body {
+  display: flex;
+  gap: 16px;
+  min-height: 320px;
+}
+
+.settings-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 140px;
+  flex: none;
+  border-right: 1px solid var(--border);
+  padding-right: 8px;
+}
+
+.settings-nav button {
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  text-align: left;
+}
+
+.settings-nav button[data-active="true"] {
+  background: var(--bg-selected);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.settings-pane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+  max-height: 60vh;
+  padding-right: 4px;
+}
+
+.settings-pane h4 {
+  margin: 0;
+  font-size: 13px;
+}
+
+.settings-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.settings-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.settings-table th,
+.settings-table td {
+  text-align: left;
+  padding: 4px 8px;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-table th {
+  color: var(--fg-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+}
+
+.settings-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.settings-note {
+  color: var(--fg-muted);
+  font-size: 11.5px;
+  overflow-wrap: anywhere;
+}
+
+.settings-error {
+  color: var(--danger);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.settings-ok {
+  color: var(--ok);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}

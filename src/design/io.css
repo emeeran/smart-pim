@@ -1,0 +1,46 @@
+/* Import/export chrome (io): the preset-detection banner on the import wizard
+   and the export dialog form. Colors/radii come from tokens.css variables so
+   both light and dark themes work; this file is layout only. */
+
+.io-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  background: var(--accent-soft);
+  color: var(--fg-main);
+  font-size: 0.9em;
+}
+
+.io-banner button {
+  margin-left: auto;
+}
+
+.export-form {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 8px 12px;
+  align-items: center;
+  margin: 12px 0;
+}
+
+.export-form label {
+  font-weight: 600;
+}
+
+.export-form select,
+.export-form input {
+  width: 100%;
+}
+
+.export-result {
+  margin: 8px 0;
+  word-break: break-all;
+}
+
+.export-hint {
+  color: var(--fg-muted);
+  font-size: 0.85em;
+}

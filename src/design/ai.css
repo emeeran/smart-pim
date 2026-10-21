@@ -1,0 +1,224 @@
+/*
+ * AI slice styles (Settings → AI, previews, checklists, dupe dialog,
+ * semantic chip). Token vars only — see tokens.css.
+ */
+
+/* ------------------------------------------------------------ AiPreview */
+
+.ai-preview {
+  width: 560px;
+  max-width: 90vw;
+}
+
+.ai-preview-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 55vh;
+  overflow: auto;
+  margin-bottom: 8px;
+}
+
+.ai-text {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: inherit;
+  margin: 0;
+  padding: 8px 10px;
+  background: var(--bg-panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.ai-section h4 {
+  margin: 4px 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
+}
+
+.ai-busy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 0;
+  color: var(--fg-muted);
+}
+
+.ai-busy-spin {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border-strong);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: ai-spin 0.8s linear infinite;
+}
+
+@keyframes ai-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.ai-error {
+  color: var(--danger);
+  padding: 6px 8px;
+  border: 1px solid var(--danger);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.ai-note {
+  color: var(--fg-muted);
+  font-size: 12px;
+}
+
+.ai-ok {
+  color: var(--ok);
+}
+
+/* ------------------------------------------------- interactive checklists */
+
+.ai-checklist {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ai-checklist label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 6px;
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+
+.ai-checklist label:hover {
+  background: var(--bg-hover);
+}
+
+/* ------------------------------------------------------- suggested rules */
+
+.ai-rule-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.4fr 1fr 1.2fr;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.ai-rule-row input,
+.ai-rule-row select {
+  min-width: 0;
+}
+
+/* ------------------------------------------------------------ Settings AI */
+
+.ai-status-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 12px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 10px;
+}
+
+.ai-reachable {
+  font-weight: 600;
+}
+
+.ai-reachable[data-ok="true"] {
+  color: var(--ok);
+}
+
+.ai-reachable[data-ok="false"] {
+  color: var(--danger);
+}
+
+.ai-warn {
+  padding: 8px 10px;
+  border: 1px solid var(--warn);
+  border-radius: var(--radius);
+  background: var(--bg-hover);
+  margin: 6px 0;
+}
+
+.ai-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 4px 16px;
+  margin: 6px 0 10px;
+}
+
+.ai-feature-grid label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.ai-reindex-note {
+  margin-top: 6px;
+}
+
+/* --------------------------------------------------------------- dupes */
+
+.ai-dupe-group {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 8px 10px;
+  margin-bottom: 10px;
+}
+
+.ai-dupe-reason {
+  color: var(--fg-muted);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.ai-dupe-member {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 2px 0;
+}
+
+.ai-dupe-member input {
+  align-self: center;
+}
+
+.ai-dupe-actions {
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* -------------------------------------------------------- semantic chip */
+
+.search-chips {
+  display: flex;
+  gap: 6px;
+  padding: 4px 8px 0;
+}
+
+.search-chip {
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  cursor: pointer;
+  color: var(--fg-main);
+}
+
+.search-chip[data-active="true"] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--fg-invert);
+}

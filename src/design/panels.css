@@ -1,0 +1,346 @@
+/*
+ * Module-panel styles (Gate 4): EPIM-style message cards, letter rails,
+ * inline task entry, kanban cards, note breadcrumb. Loaded after shell.css
+ * (imported from the module components) so refinements win equal-specificity
+ * ties without touching the shared sheet. Original palette; no third-party
+ * assets.
+ */
+
+/* ---------------------------------------------------------------- avatars */
+
+/* Eight original avatar hues; an element picks one with .hue-N. */
+.hue-0 { --av-fg: #2f6fd0; }
+.hue-1 { --av-fg: #7c5cbf; }
+.hue-2 { --av-fg: #2e8b57; }
+.hue-3 { --av-fg: #b45309; }
+.hue-4 { --av-fg: #c0392b; }
+.hue-5 { --av-fg: #0e7490; }
+.hue-6 { --av-fg: #a83a86; }
+.hue-7 { --av-fg: #5b6f2a; }
+
+/* Avatar theming. selectors are doubled on purpose: shell.css is imported
+   after panels.css by main.tsx, so equal-specificity overrides would lose. */
+.mail-module .mail-avatar,
+.contacts-module .mail-avatar {
+  background: color-mix(in srgb, var(--av-fg, var(--accent)) 18%, var(--bg-card));
+  color: var(--av-fg, var(--accent));
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+/* Letter tile used as a local favicon placeholder (no network fetch). */
+.letter-tile {
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--av-fg, var(--accent)) 18%, var(--bg-card));
+  color: var(--av-fg, var(--accent));
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 12px;
+}
+
+/* ------------------------------------------------------------------- mail */
+
+.mail-list .list-date-header {
+  gap: 8px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.mail-list .list-date-header::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentcolor;
+  opacity: 0.7;
+}
+
+/* Account-colored left accent bar (set via --card-accent when known). */
+.mail-list .mail-card[data-accented="true"] {
+  border-left-color: var(--card-accent, var(--accent-bar));
+}
+
+.mail-list .mail-card[data-accented="true"][data-unread="true"] {
+  border-left-color: var(--card-accent, var(--kind-note));
+}
+
+.mail-card[data-unread="true"] .mail-time {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Reading pane: scrolling body with a quick-reply box pinned underneath. */
+.mail-module .reading-pane {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.reading-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+}
+
+.quick-reply {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 12px 10px;
+  border-top: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.quick-reply-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.quick-reply-row .quick-reply-who {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+}
+
+.quick-reply textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 52px;
+  max-height: 150px;
+  padding: 6px 8px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--fg-main);
+  font: inherit;
+  font-size: 13px;
+}
+
+.quick-reply textarea:focus-visible {
+  outline: 2px solid var(--accent-soft);
+}
+
+.quick-reply select {
+  max-width: 190px;
+  padding: 3px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  background: var(--bg-card);
+  color: var(--fg-main);
+  font-size: 12px;
+}
+
+/* ------------------------------------------------------------ letter rail */
+
+.letter-rail-wrap {
+  height: 100%;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+}
+
+.letter-rail-wrap > .vlist {
+  flex: 1;
+  min-width: 0;
+}
+
+.letter-rail {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 3px;
+  border-left: 1px solid var(--border);
+  background: var(--bg-panel);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.letter-rail button {
+  width: 20px;
+  padding: 1px 0;
+  border-radius: 4px;
+  color: var(--fg-muted);
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.letter-rail button:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-main);
+}
+
+.letter-rail button:disabled {
+  opacity: 0.28;
+  cursor: default;
+}
+
+.letter-rail button.active {
+  background: var(--bg-selected);
+  color: var(--accent);
+}
+
+.contact-row .mail-avatar {
+  width: 28px;
+  height: 28px;
+  font-size: 10px;
+}
+
+/* ------------------------------------------------------------------ tasks */
+
+.task-add-row {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-card);
+}
+
+.task-add-row input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--fg-main);
+  font-size: 13px;
+}
+
+.task-add-row input::placeholder {
+  color: var(--fg-muted);
+}
+
+.task-add-row .muted {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.kanban .kanban-col-title {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 11px;
+}
+
+.kanban-col-add {
+  margin-left: auto;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--fg-muted);
+  font-size: 13px;
+  line-height: 1;
+}
+
+.kanban-col-add:hover {
+  background: var(--bg-hover);
+  color: var(--fg-main);
+}
+
+.kanban .kanban-card {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.kanban-card-top {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kanban-card-title {
+  flex: 1;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.prio-bang {
+  flex: none;
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--fg-muted);
+}
+
+.prio-bang[data-prio="2"] {
+  color: var(--warn);
+}
+
+.prio-bang[data-prio="3"] {
+  color: var(--danger);
+}
+
+.kanban-card-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.kanban-card-bar > span {
+  display: block;
+  height: 100%;
+  background: var(--kind-task);
+}
+
+/* ------------------------------------------------------------------ notes */
+
+.note-breadcrumb {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+  color: var(--fg-muted);
+  font-size: 12px;
+}
+
+.note-breadcrumb .crumb-current {
+  color: var(--fg-main);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.note-history-btn {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  color: var(--fg-muted);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.note-history-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--fg-main);
+}
+
+.note-history-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.note-statusbar .note-wordcount {
+  color: var(--fg-main);
+}

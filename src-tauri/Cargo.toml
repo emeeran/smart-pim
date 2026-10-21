@@ -1,0 +1,45 @@
+[package]
+name = "smart-pim"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+description = "Smart PIM — local-first personal information manager"
+
+[lib]
+name = "smart_pim_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# `core` is a sysroot crate name; alias the path dep to avoid ambiguity in
+# macro-generated `::core::...` paths.
+pfcore = { path = "../core", package = "core" }
+rusqlite = "0.37"
+# Mail protocol clients (T1.10). IMAP: `imap` + native-tls (vendored OpenSSL
+# is already in the tree via SQLCipher). SMTP: lettre. POP3: minimal
+# hand-rolled client (src/mailsync/pop3.rs) — protocol is small, and the
+# published crates are unmaintained.
+imap = "2.4"
+native-tls = "0.2"
+sha2 = "0.10"
+mail-parser = "0.11"
+lettre = { version = "0.11", default-features = false, features = ["smtp-transport", "native-tls", "builder"] }
+mdns-sd = "0.21.6"
+ureq = { version = "3", features = ["gzip"] }
+rcgen = "0.14.10"
+rand = "0.9"
+csv = { version = "1.4.0", default-features = false }
+chrono = { version = "0.4.45", default-features = false, features = ["clock"] }
+
+[dev-dependencies]
+tempfile = "3"
+
+[lints.rust]
+unsafe_code = "forbid"
+# Note: this crate hosts Tauri macro-generated code; workspace pedantic clippy
+# stays on `core` (the data engine). Shell crate uses default clippy levels.

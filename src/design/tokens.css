@@ -1,0 +1,124 @@
+/*
+ * Smart PIM design tokens (S6).
+ * Light theme replicates the reference layout language — white cards on
+ * light-gray panels, blue accent, colored left-accent bars, pill tags —
+ * drawn entirely from our own palette (no third-party assets).
+ * Dark and grey themes keep the same structure with original palettes.
+ * `<html data-theme>` always carries a *resolved* theme (light/grey/dark);
+ * the "system" preference is resolved in JS (src/lib/theme.ts).
+ */
+
+/* Theme-invariant layout metrics. */
+:root {
+  --radius: 6px;
+  --rail-width: 44px;
+  --nav-width: 208px;
+  --toolbar-height: 42px;
+  --menubar-height: 28px;
+  --statusbar-height: 26px;
+}
+
+:root,
+:root[data-theme="light"] {
+  --bg-window: #eef1f5;
+  --bg-panel: #f7f8fa;
+  --bg-card: #ffffff;
+  --bg-rail: #232a35;
+  --bg-rail-active: #344052;
+  --bg-hover: #edf1f6;
+  --bg-selected: #e3edfb;
+
+  --fg-main: #1c2430;
+  --fg-muted: #56606c;
+  --fg-invert: #f5f7fa;
+  --fg-rail: #cfd6e0;
+
+  --accent: #2f6fd0;
+  --accent-soft: #dbe8fa;
+  --accent-bar: #2f6fd0;
+
+  --danger: #c0392b;
+  --ok: #2e8b57;
+  --warn: #b8860b;
+
+  --border: #d8dee6;
+  --border-strong: #c3cbd5;
+  --shadow: 0 1px 3px rgb(16 24 40 / 0.12);
+
+  --kind-event: #7c5cbf;
+  --kind-task: #2e8b57;
+  --kind-note: #d97706;
+  --kind-contact: #2f6fd0;
+  --kind-password: #c0392b;
+  --kind-message: #2f6fd0;
+}
+
+:root[data-theme="dark"] {
+  --bg-window: #14181f;
+  --bg-panel: #1a2028;
+  --bg-card: #20272f;
+  --bg-rail: #10141a;
+  --bg-rail-active: #2c3844;
+  --bg-hover: #262e38;
+  --bg-selected: #2b3a4f;
+
+  --fg-main: #e4e9ef;
+  --fg-muted: #a6b2c0;
+  --fg-invert: #10141a;
+  --fg-rail: #adb9c6;
+
+  --accent: #5b9bf0;
+  --accent-soft: #27405e;
+  --accent-bar: #5b9bf0;
+
+  --danger: #e07b6e;
+  --ok: #6fc296;
+  --warn: #d9b45b;
+
+  --border: #2c343f;
+  --border-strong: #3a4450;
+  --shadow: 0 1px 3px rgb(0 0 0 / 0.5);
+
+  --kind-event: #a88fe0;
+  --kind-task: #6fc296;
+  --kind-note: #e0a04a;
+  --kind-contact: #5b9bf0;
+  --kind-password: #e07b6e;
+  --kind-message: #5b9bf0;
+}
+
+/* Grey theme: mid-graphite surfaces, lower contrast than dark, desaturated
+   blue accent. Declares every token the light block declares. */
+:root[data-theme="grey"] {
+  --bg-window: #33383f;
+  --bg-panel: #3a4048;
+  --bg-card: #41484f;
+  --bg-rail: #2a2f35;
+  --bg-rail-active: #4a525b;
+  --bg-hover: #474e56;
+  --bg-selected: #545c66;
+
+  --fg-main: #dde2e7;
+  --fg-muted: #b3bdc6;
+  --fg-invert: #2a2f35;
+  --fg-rail: #c3ccd4;
+
+  --accent: #9db3c7;
+  --accent-soft: #4d5866;
+  --accent-bar: #9db3c7;
+
+  --danger: #d3887d;
+  --ok: #83bfa0;
+  --warn: #cbb272;
+
+  --border: #4b525a;
+  --border-strong: #5b636c;
+  --shadow: 0 1px 3px rgb(0 0 0 / 0.35);
+
+  --kind-event: #a89bd0;
+  --kind-task: #83bfa0;
+  --kind-note: #d0a878;
+  --kind-contact: #9db3c7;
+  --kind-password: #d3887d;
+  --kind-message: #9db3c7;
+}

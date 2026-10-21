@@ -1,0 +1,201 @@
+/*
+ * Nav-tree secondary sections (F-004 "Tree panel"): smart lists, local
+ * calendars with color dots, trailing "+ Add …" link, mini month grid.
+ * Styled from design tokens only; the base .nav-tree lives in shell.css.
+ */
+
+/* Hide the secondary tree entirely in collapsed (icon-rail) mode. */
+.nav-tree[data-collapsed="true"] .nav-section {
+  display: none;
+}
+
+.nav-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.nav-section-title {
+  padding: 2px 10px 5px;
+  color: var(--fg-muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  user-select: none;
+}
+
+.nav-subrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 4px 10px 4px 22px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--fg-main);
+}
+
+.nav-subrow:hover {
+  background: var(--bg-hover);
+}
+
+.nav-subrow[data-active="true"] {
+  background: var(--bg-selected);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-subrow-label {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nav-subrow-count {
+  flex: none;
+  min-width: 18px;
+  color: var(--fg-muted);
+  font-size: 11px;
+  text-align: right;
+}
+
+.nav-subrow-count[data-zero="true"] {
+  opacity: 0.75;
+}
+
+.nav-addlink {
+  display: block;
+  width: 100%;
+  padding: 4px 10px 4px 22px;
+  border-radius: var(--radius);
+  color: var(--accent);
+  font-size: 12.5px;
+  text-align: left;
+}
+
+.nav-addlink:hover {
+  background: var(--bg-hover);
+}
+
+.nav-addlink:disabled {
+  color: var(--fg-muted);
+  cursor: default;
+}
+
+.nav-addlink:disabled:hover {
+  background: none;
+}
+
+/* Local calendars: colored dot + name, like the reference tree panel. */
+.nav-cal-dot {
+  flex: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgb(0 0 0 / 0.15);
+}
+
+/* Mini month at the bottom of the calendar tree. */
+.nav-mini {
+  margin: 8px 4px 2px;
+  padding: 6px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.nav-mini-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.nav-mini-title button {
+  padding: 0 5px;
+  color: var(--fg-muted);
+  border-radius: 4px;
+  line-height: 16px;
+}
+
+.nav-mini-title button:hover {
+  background: var(--bg-hover);
+  color: var(--accent);
+}
+
+.nav-mini-head,
+.nav-mini-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 1px;
+}
+
+.nav-mini-head span {
+  color: var(--fg-muted);
+  font-size: 9px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.nav-mini-day {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+  padding: 0;
+  border-radius: 4px;
+  color: var(--fg-main);
+  font-size: 10px;
+}
+
+.nav-mini-day:hover {
+  outline: 1px solid var(--accent);
+}
+
+.nav-mini-day[data-outside="true"] {
+  color: var(--fg-muted);
+  opacity: 0.65;
+}
+
+.nav-mini-day[data-today="true"] {
+  background: var(--accent);
+  color: var(--fg-invert);
+  font-weight: 700;
+}
+
+/*
+ * Status-bar parity bits (F-004). The base .statusbar rules live in
+ * shell.css; only the new pieces are defined here.
+ */
+
+.statusbar-unread {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.statusbar-unread svg {
+  width: 13px;
+  height: 13px;
+}
+
+.statusbar-zoom {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.statusbar-zoom input {
+  width: 90px;
+  accent-color: var(--accent);
+}
